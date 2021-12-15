@@ -1,7 +1,9 @@
 import pandas as pd
 from pykrx import stock
 
-date = '20211124'#이 날짜 기준으로 데이터 수집
+
+date = '20211225'#이 날짜 기준으로 데이터 수집
+
 
 kospi_ticker = stock.get_market_ticker_list(date, market = 'KOSPI')#2021/11/24에 상장된 코스피 종목 티커
 kosdaq_ticker = stock.get_market_ticker_list(date, market = 'KOSDAQ')
@@ -25,7 +27,7 @@ for ticker in stock.get_index_ticker_list(market='KOSPI'):
     print(ticker, stock.get_index_ticker_name(ticker))
 for ticker in stock.get_index_ticker_list(market='KOSDAQ'):
     print(ticker, stock.get_index_ticker_name(ticker))
-kospi = stock.get_index_ohlcv_by_date('20010101','20211124','1001')#코스피
-kosdaq = stock.get_index_ohlcv_by_date('20010101','20211124','2001')#코스닥
+kospi = stock.get_index_ohlcv_by_date('20010101',date,'1001')#코스피
+kosdaq = stock.get_index_ohlcv_by_date('20010101',date,'2001')#코스닥
 kospi.to_csv('./data/kospi.csv')
 kosdaq.to_csv('./data/kosdaq.csv')

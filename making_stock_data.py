@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from pykrx import stock
-date = '20211124'#이 날짜 기준으로 데이터 수집
-start = '20181124'
+date = '20211215'#이 날짜 기준으로 데이터 수집
+start = '20180101'
 stock_list = pd.read_csv('./data/stock_list.csv', encoding='CP949')
 
 def making_indicator(df):
@@ -15,8 +15,8 @@ def making_indicator(df):
     df['disparity20'] = ((df['종가'] - df['MA20']) / df['MA20'] + 1) * 100  # 이격도
     df['disparity60'] = ((df['종가'] - df['MA60']) / df['MA60'] + 1) * 100  # 이격도
     df['stddev'] = df['종가'].rolling(window=20, min_periods=1).std()  # 표준편차
-    df['upper'] = df['MA20'] + (df['stddev'] * 3)
-    df['lower'] = df['MA20'] - (df['stddev'] * 3)
+    df['upper'] = df['MA20'] + (df['stddev'] * 2)
+    df['lower'] = df['MA20'] - (df['stddev'] * 2)
     df['tp'] = (df['시가'] + df['저가'] + df['종가']) / 3
     df['pmf'] = 0  # i 번째 tp < i+1 번째 tp 인경우 p(positive)mf -> 긍정적인 현금흐름
     df['nmf'] = 0  # i 번째 tp >= i+1 번째 tp 인경우 n(negative)mf -> 부정적인 현금흐름
@@ -37,15 +37,15 @@ def making_indicator(df):
     df = df.reset_index()
     return df
 
-def make_stock_df(num):
+def pykrx_to_df(num):
     ticker = stock_list.loc[num].ticker
     df = stock.get_market_ohlcv_by_date(start, date, ticker)
     df = making_indicator(df)
     return df
 def data_to_csv(start, end):
     for num in range(start,end):
-        df = make_stock_df(num)
-        for i in range(len(df)):
+        df = pykrx_to_df(num)
+        for i in range(len(df)):#볼린저밴드 벗어나는가
             if df.iloc[i].종가 >= df.iloc[i].upper or df.iloc[i].종가 <= df.iloc[i].lower:
                 df.loc[i, 'touch'] = 1
         df['label'] = -100
@@ -58,7 +58,10 @@ def data_to_csv(start, end):
         df.to_csv(f'./data/OHLCV/{stock_list.loc[num].ticker}.csv')
         print(num)
 
+#1500까지함
+data_to_csv(1500,len(stock_list))
 
+#making index
 li = ['kospi','kosdaq']
 def making_index(li):
     for i in li:
@@ -66,6 +69,3 @@ def making_index(li):
         df = making_indicator(df)
         df.to_csv(f'./data/{i}.csv')
 making_index(li)
-
-#1500까지함
-data_to_csv(1500,len(stock_list))
