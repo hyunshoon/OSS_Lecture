@@ -7,6 +7,16 @@
 프로젝트의 진행과정은 다음과 같다.
 #### 주식 데이터 수집 -> 지표 생성 -> 모델 학습 -> 종목 선정 -> 종목 정보 수집 -> 자연어 처리 -> 시각화, stock_contents.txt, 유사종목 파일 생성
 
+##Usage
+
+1. 경로에 맞게 stock_list.csv, kospi.csv, /data/OHLCV/*.csv 파일 setting
+2. model.py 실행
+3. CrawlingAndNLP.ipynb 파일 중 필요한 부분 실행. total_word_df.csv 파일은 생성하는데 2~3시간 소요되므로 사용 추천
+4. 데이터 최신화 
+   + update_data.py(주가,지표 업데이트) 장마감 후 실행 추천.
+   + total_word_df.csv는 시간이 오래걸리므로 1주일에 한번 추천
+  
+자세한 설명은 Files Descriptions, Data Descriptions 참조 
 
 ## Files Descriptions
 ### *1. stock_list.py*
@@ -96,9 +106,15 @@ stop_words까지 추가 한 최종 버전은 '풍산, 영풍'과 같이 같은 �
 ## 업데이트 예정
 + 종목 헤드라인을 모아둔 텍스트 파일의 가독성 부족. HTML파일로 생성
 + word_cloud를 png파일로 보는것이 불편함. HTML파일로 생성
++ 종목선정 ML/DL develop
++ 키워드로 종목 검색 가능하게 기능 업데이트
 
+## 주의사항
++ 무분별한 크롤링으로 인한 책임은 사용자에게 있습니다.
++ 결과물을 이용한 투자에 대한 책임은 사용자에게 있습니다.
 
 ## Reference 
 + https://wikidocs.net/31698 (딥러닝을 이용한 자연어 처리 입문)
 + https://scikit-learn.org/stable/index.html (사이킷런)
 + https://github.com/sharebook-kr/pykrx (pykrx모듈)
++ https://hwi-doc.tistory.com/entry/IQR-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%83%81%EC%B9%98-%EB%8D%B0%EC%9D%B4%ED%84%B0Outlier-%EC%A0%9C%EA%B1%B0 (IQR을 사용한 이상치 제거)
