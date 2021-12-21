@@ -1,7 +1,110 @@
-# I'm interesting in trading and stock data analysis #
+#RockStar Stocks Info
 
-So, I was certificated these academy
-* **Korea Quant ResearchCenter(KQR)** (2021.02~2021.08)
-* **Winning Fund** (2020.09~2021.08)
+###Description
+해당 프로젝트는 한국주식(Kospi, Kosdaq) 분석을 위해 진행되었다.
+주식 투자자가 모든 종목에 대한 이슈를 점검하기에 무리가 있으므로 앞으로 유망할 종목을 선정하여
+해당 종목에 대한 정보 수집과 자연어 처리과정을 통해 선정된 종목에 대한 정보를 제공한다.
+프로젝트의 진행과정은 주식 정보 수집 -> 지표 생성 -> 모델 학습 -> 종목 선정 -> 종목 정보 수집 -> 자연어 처리 -> 시각화, 유사종목 추천
+순으로 진행된다.
 
-Nowdays, I trade stock and cryptoCurrency every other day.
+##Files Descriptions
+###1. stock_list.py
++ 국내주식종목(코스피+코스닥)리스트 생성
+###2. stock_indicator.py
++ pykrx모듈을 사용하여 국내주식OHLCV를 수집한다.
++ 사용할 지표를 생성하여 /data/OHLCV/*.csv 파일로 저장한다.
+###3. update_data.py
++ 매일 stock_data.py를 사용하여 2500여개의 수년치 주가와 지표를 구하는 것은 비효율적이다.
++ 이전에 생성한 OHLCV파일에 저장되있는 최신 날짜부터 현재 날짜까지의 데이터를 수집하여 업데이트한다.
+###4. model.py
++ SVM을 사용해 2500여개의 종목중 오를 종목을 선정한다.
++ 2018년1월1일데이터부터 현재까지의 데이터를 0.75:0.25 비율로 train_set, test_set을 생성.
++ 학습 대상 종목은 당일 종가가 볼린저밴드를 벗어났을때(최근 20거래일 중 최초로)가 기점이다.
++ Input Feature: fluct, disparity5,20,60, mfi14, upperWidth, lowerWidth, marketCap,
+  kospi_disparity5,20,60, kospi_mfi14(변수 설명은 dataSet Description 참고)
++ Label: 0,1(5거래일 후 종가가 현재 종가보다 높을 때 0 낮을 때 1)
++ Input Feature의 스케일이 다르기 때문에 remove_outlier()와 scaling()을 통해 이상치 제거와 스케일링을 한다.
++ 선정된 종목은 /data/selected_stock/*.csv에 
+
+##Dataset Descriptions
+###1. /data/stock_list.csv
++ 국내주식종목(코스피+코스닥) 리스트.
++ name: 종목명, ticker: 종목 티커(코드), marketCap: 시가총액
++ stock_list.py 실행시 생성한다.
+###2. /data/OHLCV/*.csv
++ 파일명은 종목코드로써 해당 종목의 정보를 담는다.
++ 날짜,시가,고가,저가,종가는 pykrx 모듈을 사용하여 얻는다.
++ MA: 이동평균선, disparity: 이격도, stddev: 표준편차, upper: BollingerBand(std=2)상단밴드, lower: BollingerBand(std=2)하단밴드,
+  pmf = 양의 현금흐름, nmf = 음의 현금흐름, mfi14 : 14일 동안의 현금 흐름, touch: 종가가 BollingerBand 상/하단 이탈시 1기입, label: 일주일 뒤 상승하면 1 상승하지 않으면 0
++ stock_data.py를 실행하여 얻는다.
+###3. /data/kospi.csv, kosdaq.csv
++ 코스피, 코스닥 인덱스 정보
+###4. /data/today_stock.csv
++ 학습된 모델이 선정한 오늘 찾아볼 종목 리스트
+
+
+
+
+
+
+###Select Rockstar Stocks
+종목 선정은 서포트벡터머신을 사용하여 선정한다.
+Input
+
+
+
+###SubTitle: 
+
+ 
+
+1. 개발 배경: 정보의 바다 속에서 의미 없는 정보는 사람들에게 비효율성과 피로감을 부여한다.
+이는 주식시장 참여자들에게도 마찬가지이다. '중요한 정보들만 접할 수 없을까' 하는 생각과
+'뉴스, 기업리포트, 전자공시, 종목분석글 등을 각기 다른 사이트에서 검색하지 않고 한번에 볼 수 있으면 좋겠다' 는 두 가지
+니즈를 동시에 충족시키고 싶은 마음에 정보의 정수 프로젝트를 기획하게 되었다.
+
+2. 프로젝트 개요: 프로젝트는 종목 선정과 데이터 수집으로 나뉜다.
+    + 종목 선정 방법: 약 2000개의 국내 주식 종목중에서 가격 데이터를 기반으로(주가가 일반적인 흐름에서 벗어난 이유가 내부자 정보와 같이 정보를 먼저 접하는 사람들의 영향일 가능성이 있기 때문)
+     특이점이 생긴 종목을 선정한다. 종목 선정 방법은 전통적인 지표를 이용하는 방법(ex:Bollinger Band, disparity 등)과
+     이상치 탐지 알고리즘을 사용하여 보다 나은 모델을 채택할 예정이다.
+    
+    + 데이터 수집: 선정된 종목들의 뉴스기사, 공시, 기업리포트 ,블로그 및 카페 분석 글을 크롤링하여
+    사용자가 접근하기 쉽게 제시한다.
+
+  
+####ToDoList
++ 국내주식 전 종목(ETF, SPAC, 우선주 제외) 일별 주가 데이터 수집(최근 3~5년) 및 정제
+    + 전 종목 정보를 담고 있는 csv파일 생성(시가총액순)
++ 주가데이터 기반 이상치 탐지 모델 설계
++ 이상치 탐지 모델로 선정된 종목들의 정보 수집 및 정제
++ 사용자 편의성에 맞춘 시각화
+     
+수집 종목 선정 방법
+1. 당일 종가가 볼린저밴드 3표준편차를 벗어났을 때 수집
+2. 설명변수: 5,20,60일 이격도, 시가총액, 거래량 이격도, 거래대금
+3. 종속변수: T/F(10거래일 뒤 종가보다 10%이상 상승 시 T)
+4. 모델 학습 후 T/F로 분류하여 T인 값들의 정보 수집
+
+진행상황
+1. svm으로 하려고했으나 lstm을 쓰는게 더 낫지 않을까?
+2. touch를 bollingerBand로 하는게 맞다고 본다. 등락률 상위 같은 종목들은 
+시장에서 주목을 많이 받기 때문에 더 불리하다고 본다.
+3. 거래량 및 각종 지표 추가
+
+
+confusion_matrix(predict, y_test)
+array([[1776, 1490],
+       [  80,   73]], dtype=int64)
+대부분 0으로 예측한다.        
+이상치 제거도 해야함.
+정규화도 필요함.
+
+이상치제거, 정규화(minMax, std) 했음 결과 차이 거의 없음.
+코스피도 추가함.
+
+정보 수집
+
+오른다고 ㅎ61.9%
+
+##Reference 
++ https://wikidocs.net/31698 (딥러닝을 이용한 자연어 처리 입문)
++ https://scikit-learn.org/stable/index.html (사이킷런)

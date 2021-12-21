@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
 from pykrx import stock
-date = '20211215'#이 날짜 기준으로 데이터 수집
-start = '20180101'
+
 stock_list = pd.read_csv('./data/stock_list.csv', encoding='CP949')
 
 def making_indicator(df):
@@ -59,13 +58,8 @@ def data_to_csv(start, end):
         print(num)
 
 #1500까지함
-data_to_csv(1500,len(stock_list))
-
-#making index
-li = ['kospi','kosdaq']
-def making_index(li):
-    for i in li:
-        df = pd.read_csv(f'./data/{i}.csv')
-        df = making_indicator(df)
-        df.to_csv(f'./data/{i}.csv')
-making_index(li)
+if __name__ == '__main__':
+    date = '20211217'  # 이 날짜 기준으로 데이터 수집
+    start = '20180101'
+    # data_to_csv(1500,len(stock_list))
+    #making index
