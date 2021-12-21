@@ -7,7 +7,7 @@
 프로젝트의 진행과정은 다음과 같다.
 #### 주식 데이터 수집 -> 지표 생성 -> 모델 학습 -> 종목 선정 -> 종목 정보 수집 -> 자연어 처리 -> 시각화, stock_contents.txt, 유사종목 파일 생성
 
-##Usage
+## Usage
 
 1. 경로에 맞게 stock_list.csv, kospi.csv, /data/OHLCV/*.csv 파일 setting
 2. model.py 실행
