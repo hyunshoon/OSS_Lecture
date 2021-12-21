@@ -1,10 +1,10 @@
-# Hot Stocks Info
+# Hot Stocks Information
 
-----------------------------------------------------
+
 
 ## Description
 해당 프로젝트는 한국주식(Kospi, Kosdaq) 분석을 위해 진행되었다.
-주식 투자자가 모든 종목에 대한 이슈를 점검하는 것은 피로하므로 앞으로 유망할 종목을 선정한다.
+주식 투자자가 모든 종목에 대한 이슈를 점검하는 것은 비효율적이므로 앞으로 유망할 종목을 선정한다.
 선정된 종목에 대한 정보 수집, 자연어 처리과정을 통해 선정된 종목에 대한 정보를 제공한다.
 프로젝트의 진행과정은 다음과 같다.
 #### 주식 데이터 수집 -> 지표 생성 -> 모델 학습 -> 종목 선정 -> 종목 정보 수집 -> 자연어 처리 -> 시각화, stock_contents.txt, 유사종목 파일 생성
@@ -36,26 +36,29 @@
 드라이브에 마운트해야 한다.
 + Setting 섹션에 date설정과 path_oss의 경로를 맞춰 줘야한다.
 1. 타깃 종목들의 네이버 블로그, 카페, 인플루언서, 뉴스, 공시글을 크롤링하여 날짜stock_contents.txt 파일로 정리하여 한번에 정보를 볼 수 있게 한다.
-2. 전체 종목의 네이버 블로그, 카페, 인플루언서, 뉴스글을 크롤링하여 명사만 간추려 total_stock_words.csv 파일로 저장한다.
+2. 전체 종목의 네이버 블로그, 카페, 인플루언서, 뉴스글을 크롤링하여 명사만 간추려 total_stock_words.csv 파일로 저장(2~3시간 소요)
 3. 전체 종목 corpus를 생성하여 빈도수 Top200 단어를 뽑고 stop_words를 정성적 판단하에 생성한다.
 4. TF-idf 행렬을 만들고, 해당 종목의 상위 25개의 키워드를 뽑아 wordcloud를 생성한다.
 5. TF-idf 행렬 기반 코사인 유사도 matrix를 생성하여 find_similar_stocks.csv파일로 저장하여 유사 종목을 뽑는다.
 
 #### Ex) 2021년 12월 17일 선정된 고려아연
 ![고려아연](./data/png/고려아연.png)\
+
 단어 빈도수만으로 wordCloud생성 시 '주가, 관련, 주식...'등과 같이 해당 종목의 특성과 관련없는 단어들이 상위 포지션을 차지한다.
 ![고려아연](./data/png/고려아연_tfidf.png)\
+
 TF-IDF Matrix를 거친 후 '원자재, 아연, 구리'등 과 같이 고려아연이 영위하는 사업과 관련있는 단어들로 wordCloud가 생성 되었다.
 ![고려아연](./data/png/고려아연_tfidf_remove_stopwords.png)\
+
 stop_words까지 추가 한 최종 버전은 '풍산, 영풍'과 같이 같은 산업군에 속해있는 종목 키워드의 비중이 높아지고, '전지, 전력, 배터리'와 같이 새로운 핵심 키워드들이 추가되었다.
 보여주는 단어 수가 많아진것도 있지만 전체적으로 핵심 키워드들이 두각을 보인다.
 
 #### Ex) 2021년 12월 19일 기준 코사인 유사도 상위 종목 예시
-![sample1](./data/sample/sample1.png)\
-![sample2](./data/sample/sample2.png)\
+![sample1](./data/sample/sample1.PNG)\
+![sample2](./data/sample/sample2.PNG)\
 
 #### Ex) 2021년 12월 21일 기준 코사인 유사도 상위 종목으로 유사종목 생성
-![sample2](./data/sample/sample3.png)\
+![sample2](./data/sample/sample3.PNG)\
 
 
 ## Dataset Descriptions
@@ -76,20 +79,20 @@ stop_words까지 추가 한 최종 버전은 '풍산, 영풍'과 같이 같은 �
 ### 5. /data/png/*.pnf
 + wordCloud 결과물
 ### 6. /sample/word_matrix.csv
-+ 전체 종목 전체 단어간 TF-IDF Matrix
++ 전체 종목 전체 단어간 TF-IDF Matrix(용량부족으로 업로드 불가. 코랩파일 확인)
 ### 7. /sample/cosine_similirity.csv
-+ 전체 종목 간 코사인 유사도
-### 7. /sample/find_similirity_stocks.csv
++ 전체 종목 간 코사인 유사도(용량부족으로 업로드 불가. 코랩파일 확인)
+### 8. /sample/find_similirity_stocks.csv
 + 선정된 종목들의 코사인 유사도 상위 10종목 데이터프레임
 
 
 
+## 업데이트 예정
++ 종목 헤드라인을 모아둔 텍스트 파일의 가독성 부족. HTML파일로 생성
++ word_cloud를 png파일로 보는것이 불편함. HTML파일로 생성
 
 
-##업데이트 예정
-+ 
-
-
-##Reference 
+## Reference 
 + https://wikidocs.net/31698 (딥러닝을 이용한 자연어 처리 입문)
 + https://scikit-learn.org/stable/index.html (사이킷런)
++ https://github.com/sharebook-kr/pykrx (pykrx모듈)
