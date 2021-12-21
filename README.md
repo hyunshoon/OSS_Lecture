@@ -9,6 +9,7 @@
 프로젝트의 진행과정은 다음과 같다.
 #### 주식 데이터 수집 -> 지표 생성 -> 모델 학습 -> 종목 선정 -> 종목 정보 수집 -> 자연어 처리 -> 시각화, stock_contents.txt, 유사종목 파일 생성
 
+
 ## Files Descriptions
 ### *1. stock_list.py*
 + 국내주식종목(코스피+코스닥)리스트 생성
@@ -19,9 +20,9 @@
 + 매일 stock_data.py를 사용하여 2500여개의 수년치 주가와 지표를 구하는 것은 비효율적이다.
 + 이전에 생성한 OHLCV파일에 저장되있는 최신 날짜부터 현재 날짜까지의 데이터를 수집하여 업데이트한다.
 ### *4. model.py*
-+ SVM을 사용해 2500여개의 종목중 오를 종목을 분류한다.
++ 학습 대상 종목은 2500여개의 종목중 당일 종가가 볼린저밴드를 벗어난(최근 20거래일 중 최초로 벗어났을 때만)종목이다.
++ SVM을 이용해 학습 대상 종목중 오를 종목을 분류한다.
 + 2018년1월1일데이터부터 현재까지의 데이터를 0.75:0.25 비율로 train_set, test_set을 생성.
-+ 학습 대상 종목은 당일 종가가 볼린저밴드를 벗어났을때(최근 20거래일 중 최초로 벗어났을 때만)가 기점이다.
 + Input Feature: fluct, disparity5,20,60, mfi14, upperWidth, lowerWidth, marketCap,
   kospi_disparity5,20,60, kospi_mfi14(변수 설명은 Dataset Description 참고)
 + Label: 0,1(5거래일 후 종가가 현재 종가보다 높을 때 0 낮을 때 1)
@@ -42,23 +43,25 @@
 5. TF-idf 행렬 기반 코사인 유사도 matrix를 생성하여 find_similar_stocks.csv파일로 저장하여 유사 종목을 뽑는다.
 
 #### Ex) 2021년 12월 17일 선정된 고려아연
-![고려아연](./data/png/고려아연.png)\
+![고려아연](./data/png/고려아연.png)
 
 단어 빈도수만으로 wordCloud생성 시 '주가, 관련, 주식...'등과 같이 해당 종목의 특성과 관련없는 단어들이 상위 포지션을 차지한다.
-![고려아연](./data/png/고려아연_tfidf.png)\
+
+![고려아연](./data/png/고려아연_tfidf.png)
 
 TF-IDF Matrix를 거친 후 '원자재, 아연, 구리'등 과 같이 고려아연이 영위하는 사업과 관련있는 단어들로 wordCloud가 생성 되었다.
-![고려아연](./data/png/고려아연_tfidf_remove_stopwords.png)\
+
+![고려아연](./data/png/고려아연_tfidf_remove_stopwords.png)
 
 stop_words까지 추가 한 최종 버전은 '풍산, 영풍'과 같이 같은 산업군에 속해있는 종목 키워드의 비중이 높아지고, '전지, 전력, 배터리'와 같이 새로운 핵심 키워드들이 추가되었다.
 보여주는 단어 수가 많아진것도 있지만 전체적으로 핵심 키워드들이 두각을 보인다.
 
 #### Ex) 2021년 12월 19일 기준 코사인 유사도 상위 종목 예시
 ![sample1](./data/sample/sample1.PNG)\
-![sample2](./data/sample/sample2.PNG)\
+![sample2](./data/sample/sample2.PNG)
 
-#### Ex) 2021년 12월 21일 기준 코사인 유사도 상위 종목으로 유사종목 생성
-![sample2](./data/sample/sample3.PNG)\
+#### Ex) 2021년 12월 21일 기준 코사인 유사도 상위 종목으로 유사종목 생성\
+![sample2](./data/sample/sample3.PNG)
 
 
 ## Dataset Descriptions
